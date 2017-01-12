@@ -1,0 +1,41 @@
+{
+  "name": "ms-perf",
+  "version": "1.0.0",
+  "description": "easy to use performance reporting tool, designed for profiling promise execution flow",
+  "main": "index.js",
+  "scripts": {
+    "test": "eslint . && jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/makeomatic/ms-perf.git"
+  },
+  "keywords": [
+    "perf",
+    "measure",
+    "performance",
+    "promise",
+    "timers",
+    "monitoring",
+    "profiling"
+  ],
+  "author": "Vitaly Aminev <v@makeomatic.ru>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/makeomatic/ms-perf/issues"
+  },
+  "homepage": "https://github.com/makeomatic/ms-perf#readme",
+  "dependencies": {
+    "debug": "^2.6.0"
+  },
+  "engines": {
+    "node": ">= 6.x.x"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.1.1",
+    "eslint": "^3.13.1",
+    "eslint-config-airbnb-base": "^11.0.1",
+    "eslint-plugin-import": "^2.2.0",
+    "jest": "^18.1.0"
+  }
+}
