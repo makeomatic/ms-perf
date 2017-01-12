@@ -4,7 +4,9 @@
   "description": "easy to use performance reporting tool, designed for profiling promise execution flow",
   "main": "index.js",
   "scripts": {
-    "test": "eslint . && jest"
+    "test": "eslint . && jest",
+    "preversion": "npm test",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
