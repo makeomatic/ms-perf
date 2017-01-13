@@ -13,27 +13,27 @@ Module generally consists of a single function with different use
 
 1. start timer instance
 
-```js
-const perf = require('ms-perf');
+  ```js
+  const perf = require('ms-perf');
 
-// pass in timer name
-const timer = perf('timer-name');
-```
+  // pass in timer name
+  const timer = perf('timer-name');
+  ```
 
 2. register timer triggers
 
-```js
-// returns Function
-timer('trigger')
-```
+  ```js
+  // returns Function
+  timer('trigger')
+  ```
 
 3. retrieve timers
 
-```js
-// returns reference to timers object
-// and cleans up internal context
-timer()
-```
+  ```js
+  // returns reference to timers object
+  // and cleans up internal context
+  timer()
+  ```
 
 ### Example
 
@@ -41,6 +41,9 @@ timer()
 // bluebird has many useful utilities...
 const Promise = require('bluebird');
 const perf = require('ms-perf');
+const rethrow = e => {
+  throw e
+};
 
 function asyncExecutionFlow(input) {
   const timer = perf('async');
@@ -54,12 +57,19 @@ function asyncExecutionFlow(input) {
     .then(processHTTPRequest)
     .tap(timer('parse'))
     .then(parsed => ({
-      meta: {
-        timers: timer()
-      },
+      meta: {},
       data: parsed
     }))
-    .tap(console.log);
+    .catch(e => {
+      // ensure that in-case of errors timer is cancelled
+      const timers = timer();
+      // do something with error timers / handle errors
+      throw e;
+    })
+    .tap((data) => {
+      data.meta.timers = timer();
+    })
+    .tap(console.log)
 
   // when promise is completed, output will look like this:
   //
