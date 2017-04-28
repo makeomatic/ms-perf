@@ -1,5 +1,7 @@
 # ms-perf
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/makeomatic/ms-perf.svg)](https://greenkeeper.io/)
+
 Node.js inline function performance measurement tool.
 Provides simple way to understand how much relative time your functions/promises are being executed for
 
