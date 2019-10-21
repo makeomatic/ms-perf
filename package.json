@@ -1,6 +1,6 @@
 {
   "name": "ms-perf",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "easy to use performance reporting tool, designed for profiling promise execution flow",
   "main": "index.js",
   "scripts": {
