@@ -1,7 +1,8 @@
+const assert = require('assert');
 const debug = require('debug')('ms-perf');
 
-const hasOwnProperty = Object.prototype.hasOwnProperty;
-const hrtime = process.hrtime;
+const { hasOwnProperty } = Object.prototype;
+const { hrtime } = process;
 const TOTAL = '$';
 
 function getMiliseconds(diff) {
@@ -9,9 +10,8 @@ function getMiliseconds(diff) {
 }
 
 function addStep(step) {
-  const name = this.name;
+  const { name, timers, thunk } = this;
   const namespace = `${name}:${step || TOTAL}`;
-  const timers = this.timers;
 
   // fail-safe
   if (!timers) return undefined;
@@ -19,8 +19,11 @@ function addStep(step) {
   // prepare object map
   if (hasOwnProperty.call(timers, namespace) !== true && step) {
     timers[namespace] = '0';
+
     // can create a closure, but this is supposed to run fast on node 7+
-    return addStep.bind(this, step);
+    if (thunk) {
+      return addStep.bind(this, step);
+    }
   }
 
   const time = getMiliseconds(hrtime(this.timer));
@@ -46,13 +49,16 @@ function addStep(step) {
   return timers;
 }
 
-module.exports = (name) => {
+module.exports = (name, opts = { thunk: true }) => {
+  assert(opts !== null && typeof opts === 'object');
+
   // generates context and bound function
   const ctx = addStep.bind({
     name,
     total: 0,
-    timers: {},
+    timers: Object.create(null),
     timer: hrtime(),
+    thunk: opts.thunk,
   });
 
   // in-case somebody wants to manually call it
