@@ -5,9 +5,26 @@ const { hasOwnProperty } = Object.prototype;
 const { hrtime } = process;
 const TOTAL = '$';
 
-function getMiliseconds(diff) {
-  return ((diff[0] * 1e3) + (diff[1] / 1e6));
-}
+const NS_PER_SEC = 1e9;
+const MS_PER_NS = 1e6;
+
+/**
+* Get duration in milliseconds from two process.hrtime()
+* @function hrTimeDurationInMs
+* @param {Array} startTime - [seconds, nanoseconds]
+* @param {Array} endTime - [seconds, nanoseconds]
+* @returns {number} durationInMs
+*/
+const hrTimeDurationInMs = (startTime, endTime) => {
+  if (!Array.isArray(startTime) || !Array.isArray(endTime)) {
+    return 0;
+  }
+
+  const secondDiff = endTime[0] - startTime[0];
+  const nanoSecondDiff = endTime[1] - startTime[1];
+  const diffInNanoSecond = secondDiff * NS_PER_SEC + nanoSecondDiff;
+  return Math.round(diffInNanoSecond / MS_PER_NS);
+};
 
 function addStep(step) {
   const { name, timers, thunk } = this;
@@ -26,7 +43,8 @@ function addStep(step) {
     }
   }
 
-  const time = getMiliseconds(hrtime(this.timer));
+  const next = hrtime();
+  const time = hrTimeDurationInMs(this.timer, next);
 
   if (step) {
     debug('[%s] %s ms', namespace, time);
@@ -34,7 +52,7 @@ function addStep(step) {
     // and increase total counter
     timers[namespace] = time;
     this.total += time;
-    this.timer = hrtime();
+    this.timer = next;
     return time;
   }
 
